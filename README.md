@@ -100,15 +100,7 @@ sudo chown -R 33:33 /srv/nfs/www/
 
 ---
 
-## Credenciales
 
-| Servicio          | Usuario/Email              | Contrasena     |
-|-------------------|----------------------------|----------------|
-| Supervisor web    | ricardo@tecnorural.es      | Ricardo2024!   |
-| MariaDB app       | webuser                    | WebPass2024!   |
-| HAProxy stats     | admin                      | admin          |
-
----
 
 ## Problemas habituales
 
