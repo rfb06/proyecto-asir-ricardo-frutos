@@ -1,0 +1,43 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+GLPI_VERSION = "11.0.7"
+
+Vagrant.configure("2") do |config|
+
+  # GLPI 11 — Docker Compose
+  config.vm.define "glpi11" do |glpi|
+
+    glpi.vm.box = "debian/bookworm64"
+
+    glpi.vm.hostname = "glpi11"
+
+    glpi.vm.network "private_network", ip: "192.168.56.10"
+
+    glpi.vm.provider "virtualbox" do |vb|
+      vb.name = "glpi11"
+      vb.memory = 4096
+      vb.cpus = 2
+    end
+
+  end
+
+  # RMM - MeshCentral
+
+  config.vm.define "rmm" do |rmm|
+
+    rmm.vm.box = "debian/bookworm64"
+
+    rmm.vm.hostname = "rmm"
+
+    rmm.vm.network "private_network", ip: "192.168.56.20"
+
+    rmm.vm.provider "virtualbox" do |vb|
+      vb.name = "rmm-bookworm"
+      vb.memory = 4096
+      vb.cpus = 2
+    end
+
+  end
+
+end
