@@ -2,123 +2,310 @@
 
 ![TecnoRural Logo](tecnorural.png)
 
-**Autor:** Ricardo Frutos Bravo  
-**Empresa:** TecnoRural S.L. - Cadena de tiendas de informatica en Extremadura  
-**Sede central:** Merida, Badajoz
+# TecnoRural — Infraestructura
+
 
 ---
 
-## Descripcion del proyecto
+## Índice
 
-Infraestructura de red completa para TecnoRural S.L., desplegada con Vagrant + VirtualBox sobre Debian 12 (bookworm). Incluye balanceo de carga, almacenamiento NFS compartido, base de datos MariaDB y una aplicacion web PHP con Bootstrap 5.
-
----
-
-## Apertura de la primera tienda - Merida 2026
-
-![Apertura primera tienda TecnoRural Merida](tienda.png)
-
-En enero de 2026 Ricardo abrio su primera tienda en **Merida, Extremadura**. Desde primera hora de la manana se formo una cola de vecinos esperando para entrar, lo que demostro que la idea de Ricardo tenia mucho sentido: en la zona no habia ninguna tienda de informatica cercana y la gente llevaba anos necesitando este servicio.
-
-La tienda de Merida fue la primera de la cadena en ofrecer tambien servicio tecnico presencial, con un mostrador de recepcion de equipos para reparacion. El dia de la apertura se vendieron mas de 40 equipos y se abrieron las primeras incidencias tecnicas en el sistema.
-
-Esta primera tienda en Merida se convirtio rapidamente en la mas importante de la cadena y fue la razon por la que Ricardo decidio instalar aqui la sede central de TecnoRural.
-
----
-
-## La Torre TecnoRural - Sede Central en Merida
-
-![Torre TecnoRural - Sede central en Merida](torre_tecnorural.png)
-
-En 2026, con el exito de la primera tienda y la expansion de la cadena por toda Extremadura, Ricardo tomo la decision de establecer la **sede central de TecnoRural** en un edificio emblematico del centro de Merida. El letrero verde de TECNO RURAL en lo alto de la torre se convirtio rapidamente en un simbolo reconocible de la ciudad.
-
-El edificio alberga en su planta baja la tienda mas grande de la cadena, con todos los productos expuestos y el mostrador de atencion tecnica. En las plantas superiores se encuentran las oficinas de administracion, la sala de servidores donde esta alojada toda la infraestructura informatica de la empresa, y una sala de reuniones desde la que se coordina la logistica de las demas tiendas.
-
-Desde la Torre TecnoRural en Merida se gestiona:
-
-- Los pedidos a proveedores para todas las tiendas de la cadena
-- Las incidencias tecnicas que llegan a traves de la aplicacion web
-- La contabilidad y administracion central
-- La ruta semanal de reparto de stock a las tiendas de los pueblos de alrededor
-- El equipo de tecnicos que dan soporte a toda Extremadura
-
-La sede en Merida fue posible gracias al crecimiento rapido de la empresa y a la confianza que los vecinos de Extremadura depositaron en TecnoRural desde el primer dia.
+- [Resumen](#resumen)
+- [Descripción de la Empresa](#descripción-de-la-empresa)
+- [Infraestructura](#infraestructura)
+- [Windows Admin Center (WAC)](#windows-admin-center-wac)
+- [Windows Deployment Services (WDS)](#windows-deployment-services-wds)
+- [Active Directory](#active-directory)
+- [Inventariado — GLPI + FusionInventory](#inventariado--glpi--fusioninventory)
+- [Acceso Remoto — MeshCentral](#acceso-remoto--meshcentral)
+- [Seguridad](#seguridad)
+- [Resolución de Problemas](#resolución-de-problemas)
+- [Glosario](#glosario)
+- [Propuestas de Mejora](#propuestas-de-mejora)
 
 ---
 
-# TecnoRural - Infraestructura de Servicios
+## Resumen
 
-## Responsable
+TecnoRural es una empresa tecnológica especializada en soluciones IT para cooperativas agrarias, explotaciones ganaderas y organismos rurales. Esta documentación describe la infraestructura tecnológica interna, articulada en cuatro bloques principales:
 
-Ricardo Frutos
-
----
-
-# GLPI 11
-
-**Dirección IP:** `192.168.56.10`
-
-### Funciones
-
-* Gestión de incidencias y solicitudes de soporte.
-* Inventario de equipos y activos informáticos.
-* Seguimiento de tickets y tareas técnicas.
-* Gestión documental.
-* Centralización de la información informática de la empresa.
+| Bloque | Herramienta | DNS interno |
+|---|---|---|
+| Administración centralizada | Windows Admin Center (WAC) | `192.168.56.254` |
+| Despliegue automatizado de SO | Windows Deployment Services (WDS) | `192.168.56.254` |
+| Inventariado de activos IT | GLPI + FusionInventory | `incidencias.tecnorural.es` |
+| Acceso remoto y soporte | MeshCentral | `meshcentral.tecnorural.es` |
 
 ---
 
-# MeshCentral (RMM)
+## Descripción de la Empresa
 
-**Dirección IP:** `192.168.56.20`
-
-### Funciones
-
-* Acceso remoto seguro a los equipos de la empresa.
-* Soporte técnico remoto.
-* Administración de dispositivos.
-* Inventario de equipos.
-* Monitorización y mantenimiento de sistemas.
-* Gestión centralizada de ordenadores del dominio.
+**Sector:** Tecnología para el sector rural y agrícola  
+**Empleados:** 30–40  
+**Presencia:** Oficina central + sedes rurales en Extremadura (Badajoz y Cáceres)
 
 ---
 
-# Balanceador de Carga en la Nube
+## Infraestructura
 
-### Descripción
+### Requisitos de Hardware
 
-Debido a las limitaciones presupuestarias actuales de la empresa, no resulta viable aumentar los recursos hardware (RAM y CPU) de los servidores principales. Como medida para mejorar la disponibilidad y el rendimiento de los servicios sin incrementar significativamente los costes, se ha optado por desplegar dos máquinas virtuales en un proveedor de hosting cloud y situar un balanceador de carga delante de ellas.
+- RAM: 16 GB mínimo
+- CPU: 8 núcleos a 2,5 GHz mínimo
 
-### Funciones
+### Software
 
-* Distribuir las peticiones entre dos servidores.
-* Evitar la sobrecarga de una única máquina.
-* Mejorar la disponibilidad de los servicios.
-* Mantener el servicio operativo si uno de los nodos presenta incidencias.
-* Aprovechar recursos de bajo coste en lugar de ampliar servidores con más memoria RAM.
+| Capa | Software | Versión |
+|---|---|---|
+| SO Servidor | Windows Server | 2022 Standard / Datacenter |
+| SO Clientes | Windows 10 Pro | Última versión |
+| SO GLPI / MeshCentral | Debian | 12 Bookworm |
+| Administración | Windows Admin Center | v2 preview |
+| Inventariado | GLPI | GLPI 11 |
+| Acceso Remoto | MeshCentral | Última (Node.js) |
+| Despliegue SO | WDS + MDT + WinPE |  |
 
-### Infraestructura
+### Virtualización
 
-El balanceador reparte las conexiones entre dos servidores alojados en la nube:
+Los servicios GLPI y MeshCentral corren en **máquinas virtuales Vagrant** dentro de la red interna. Ambas son inaccesibles directamente desde el exterior.
 
-| Nodo    | Función                     |
-| ------- | --------------------------- |
-| Cloud 1 | Nodo principal              |
-| Cloud 2 | Nodo de apoyo y redundancia |
+### Exposición Web (Landing Page)
 
-### Ventajas de esta solución
+La landing page pública alojada en Cáceres se expone mediante:
 
-* Menor coste que ampliar la infraestructura física.
-* Mayor disponibilidad del servicio.
-* Posibilidad de mantenimiento sin interrupciones.
-* Escalabilidad futura mediante la incorporación de nuevos nodos.
-* Optimización de los recursos disponibles de la empresa.
+- **Ngrok** — reverse proxy que crea un túnel seguro sin necesidad de IP pública estática.
+---
+
+## Windows Admin Center (WAC)
+
+WAC centraliza la administración de toda la infraestructura Windows desde una **interfaz web unificada**, sin necesidad de RDP ni RSAT.
+
+- **Modo de despliegue:** Gateway Mode sobre Windows Server 2022
+- **Puerto:** 443 (HTTPS)
+- **Autenticación:** Kerberos / NTLM con credenciales de dominio
+- **Acceso restringido a:** grupo `Administrators` (red `192.168.56.0/24`)
+
+### Funcionalidades principales
+
+- Monitorización en tiempo real de CPU, RAM, disco y red de todos los nodos.
+- Gestión de servicios, visor de eventos y ejecución de PowerShell remoto.
+- Administración de Active Directory (usuarios, grupos, OUs, contraseñas).
+- Gestión de almacenamiento, volúmenes y recursos compartidos SMB.
 
 ---
 
-# Resumen de Direcciones
+## Windows Deployment Services (WDS)
 
-| Servicio          | Dirección IP  |
-| ----------------- | ------------- |
-| GLPI 11           | 192.168.56.10 |
-| MeshCentral (RMM) | 192.168.56.20 |
+WDS permite el **despliegue automatizado de Windows por red (PXE)** sin medios físicos.
+
+**Servidor:** `192.168.56.254`
+
+### Flujo de autoaprovisionamiento
+
+```
+1. Equipo nuevo encendido en la red
+2. Solicitud DHCP + petición PXE broadcast
+3. DHCP asigna IP → indica dirección del servidor WDS
+4. WDS entrega fichero de arranque (bootmgfw.efi / pxeboot.n12)
+5. Equipo carga WinPE desde la red
+6. WinPE lanza instalador con unattend.xml (desatendido)
+7. Windows se instala y se une al dominio TecnoRural.local
+8. Equipo reinicia completamente configurado ✓
+```
+
+### Imágenes de arranque
+
+| Imagen | Arquitectura | Uso |
+|---|---|---|
+| `boot.wim` (WinPE 11) | x64 UEFI | Equipos modernos (uso principal) |
+| `boot_legacy.wim` (WinPE 10) | x64 BIOS | Equipos con BIOS Legacy |
+| `boot_diag.wim` | x64 | WinPE de diagnóstico |
+
+### Imágenes de instalación
+
+| Grupo WDS | Sistema Operativo | Destinatarios |
+|---|---|---|
+| `TecnoRural_W10` | Windows 10 LTSC 2021 x64 | Equipos de campo y sedes rurales |
+
+### Cuenta de servicio WDS (`UsuarioAprovision`)
+
+Cuenta de dominio con **mínimo privilegio** para unir equipos al dominio:
+
+- Escritura únicamente sobre la OU `Computers`
+- Límite de 100 uniones al dominio por día
+- Sin login interactivo ni acceso a recursos compartidos
+- Contraseña sin caducidad (cuenta de servicio)
+
+### Integración con MDT
+
+MDT extiende WDS con automatización avanzada:
+
+- Instalación automática de aplicaciones post-despliegue (FusionInventory, MeshAgent, antivirus, ofimática).
+- Scripts PostInstall (renombrado de equipo, impresoras de red, mapeo de unidades).
+- Selección dinámica de OU en AD según modelo del equipo.
+
+---
+
+## Active Directory
+
+**Dominio:** `TecnoRural.es`  
+**Servidor:** `192.168.56.254` (DC principal + DHCP + DNS + WDS + WAC)
+
+
+### Grupos de seguridad
+
+| Grupo | Permisos principales |
+|---|---|
+| `Infraestructura_TecnoRural` | Acceso total WAC, AD, servidores |
+| `Helpdesk_TecnoRural` | WAC lectura, MeshCentral operador |
+| `Administracion_TecnoRural` | Recursos compartidos Administración |
+| `Desarrollo_TecnoRural` | Repositorios, servidores dev |
+| `Directivos_TecnoRural` | Perfiles móviles, recursos dirección |
+| `Soporte_TecnoRural` | MeshCentral operador, VPN campo |
+| `GLPI_Lectores` | Solo lectura en GLPI |
+| `GLPI_Gestores` | Gestión completa GLPI |
+
+**Roles funcionales:** `Administrador` · `Programador` · `Tecnico` · `Supervisor`
+
+---
+
+## Inventariado — GLPI + FusionInventory
+
+**URL:** `http://incidencias.tecnorural.es/glpi`  
+**SO servidor:** Debian 12 Bookworm (VM Vagrant)
+
+### Stack del servidor GLPI
+
+| Componente | Versión | Función |
+|---|---|---|
+| Apache | 2 | Servidor web |
+| PHP | 8 | Runtime GLPI |
+| MariaDB | 10 | Base de datos |
+| GLPI | 11 | Gestión de activos y tickets |
+| Plugin FusionInventory | 6.x | Recepción de inventarios |
+
+### Datos recopilados por FusionInventory
+
+Hardware (fabricante, modelo, serie, BIOS), CPU, RAM, almacenamiento, red (MAC, IP), SO, software instalado, actualizaciones Windows, usuarios logueados y periféricos.
+
+### Scripts de aprovisionamiento (ejecutados en cada inicio de sesión)
+
+```bat
+:: Script 1 — Instala el agente MeshCentral si no está presente
+@echo off
+if exist "C:\Program Files\Mesh Agent\MeshAgent.exe" exit /b 0
+\\Tecnorural\Agentes\agente.exe -fullinstall
+exit /b 0
+
+:: Script 2 — Instala/actualiza el agente GLPI
+msiexec /i \\Tecnorural\Agentes\GLPI-Agent-1.17-x64.msi /quiet ^
+  SERVER=http://incidencias.tecnorural.es/front/inventory.php ^
+  RUNNOW=1 EXECMODE=Service TASKS=Inventory
+```
+
+### Flujo de autoaprovisionamiento completo
+
+```
+PXE → WDS despliega Windows → se une a OU Computers
+→ GPO instala FusionInventory → primer inventariado enviado a GLPI
+→ GLPI crea el activo automáticamente
+→ Técnico verifica, asigna usuario y mueve a OU definitiva
+→ Equipo recibe GPOs de departamento y queda operativo ✓
+```
+
+---
+
+## Acceso Remoto — MeshCentral
+
+**URL:** `https://meshcentral.tecnorural.es`  
+**SO servidor:** Debian 12 Bookworm (VM Vagrant)
+
+### Stack del servidor MeshCentral
+
+| Componente | Versión | Función |
+|---|---|---|
+| Node.js | 20 LTS | Runtime MeshCentral |
+| MeshCentral | Última estable | Servidor de gestión remota |
+| NeDB | Integrado | BD interna (dispositivos, usuarios, logs) |
+| Nginx | 1.24 | Reverse proxy HTTPS + TLS |
+
+### Funcionalidades para soporte técnico
+
+- **Escritorio remoto** — Control completo o solo visualización desde el navegador, con consentimiento configurable, ajuste de calidad y transferencia de portapapeles.
+- **Consola remota** — Acceso a CMD, PowerShell (Windows) o bash (Linux) directamente en el navegador.
+- **Transferencia de ficheros** — Gestor bidireccional para subir/descargar ficheros y explorar el sistema de archivos remoto.
+- **Wake-on-LAN** — Encendido remoto de equipos apagados registrados en la plataforma.
+- **Auditoría de sesiones** — Registro completo (técnico, equipo, fecha/hora, tipo de acceso) con grabación de sesión opcional. Necesario para cumplimiento **RGPD**.
+
+### Flujo de soporte remoto
+
+```
+1. Trabajador abre incidencia en GLPI
+2. Técnico recibe notificación y accede a MeshCentral
+3. Localiza el equipo (convención: TR-DEPT-NNN)
+4. Inicia sesión remota (con aviso de consentimiento si está configurado)
+5. Resuelve la incidencia
+6. Añade notas de resolución en el ticket GLPI
+7. Sesión queda registrada en log de auditoría ✓
+```
+
+---
+
+## Seguridad
+
+### Principios aplicados
+
+- **Mínimo privilegio** — Cada cuenta y servicio accede únicamente a lo imprescindible.
+- **Centralización** — Active Directory como único punto de gestión de identidades.
+- **Auditoría continua** — Todas las operaciones en WAC, GLPI y MeshCentral quedan registradas.
+
+### Reglas de red principales
+
+| Origen | Destino | Puerto | Descripción |
+|---|---|---|---|
+| Todos los equipos del dominio | `incidencias.tecnorural.es` | TCP 80 | Portal GLPI |
+| Agentes MeshCentral | `meshcentral.tecnorural.es` | TCP 443 | Canal agente-servidor (TLS 1.3) |
+| Equipos del dominio | `192.168.56.254` | UDP 67/68 | DHCP |
+| Equipos PXE | `192.168.56.254` | UDP 4011 | WDS ProxyDHCP |
+
+---
+
+## Resolución de Problemas
+
+| Síntoma | Causa probable | Solución |
+|---|---|---|
+| Equipo no arranca por PXE | PXE desactivado en BIOS o opciones DHCP 066/067 incorrectas | Verificar opciones DHCP y boot order en BIOS |
+| WDS no une equipo al dominio | Contraseña `UsuarioAprovision` expirada o sin permisos en OU | Revisar contraseña en AD y permisos en OU `Computers` |
+| FusionInventory no reporta a GLPI | Servicio detenido o URL incorrecta | Reiniciar servicio; verificar URL en `fusioninventory-agent.cfg` |
+| Agente MeshCentral offline | Servicio detenido o firewall bloqueando TCP 443 | `services.msc` → Mesh Agent → Reiniciar; revisar firewall |
+| WAC inaccesible | Servicio `ServerManagementGateway` detenido o certificado caducado | Iniciar servicio; renovar certificado en WAC Settings |
+| GPO no se aplica tras despliegue | Equipo aún en OU `Computers` o retraso AD | `gpupdate /force`; verificar OU con `Get-ADComputer` |
+| GLPI no importa usuarios de AD | Contraseña cuenta GLPI expirada o filtro LDAP incorrecto | Verificar credenciales y test de conexión LDAP en GLPI |
+
+---
+
+## Glosario
+
+| Término | Definición |
+|---|---|
+| **GLPI Inventory Agent** | Agente de inventariado que recopila hardware/software y lo envía a GLPI. |
+| **GLPI** | Gestionnaire Libre de Parc Informatique. Plataforma web para gestión de activos IT y tickets. |
+| **MDT** | Microsoft Deployment Toolkit. Extiende WDS con automatización avanzada de despliegues. |
+| **MeshCentral** | Plataforma de acceso remoto open-source para gestionar equipos Windows/Linux desde el navegador. |
+| **PXE** | Pre-boot eXecution Environment. Estándar para arrancar un equipo desde la red. |
+| **WAC** | Windows Admin Center. Panel web unificado para administrar infraestructuras Windows. |
+| **WDS** | Windows Deployment Services. Rol de Windows Server para despliegue de SO por red. |
+| **WIM** | Windows Imaging Format. Formato de imagen de disco para instalaciones de Windows. |
+| **WinPE** | Windows Preinstallation Environment. Versión mínima de Windows para el proceso de instalación PXE. |
+
+---
+
+## Propuestas de Mejora
+
+- **DC secundario** — Eliminar el punto único de fallo del directorio activo con un segundo controlador de dominio.
+- **CA interna (AD CS)** — Sustituir certificados autofirmados por certificados de CA interna para eliminar advertencias en navegadores.
+- **Backups automatizados** — Copias nocturnas de las BBDD de GLPI y MeshCentral hacia el servidor de ficheros del dominio.
+- **Integración GLPI ↔ MeshCentral** — Vincular automáticamente cada sesión de acceso remoto con su ticket de incidencia en GLPI.
+- **Monitorización** — Añadir Zabbix o Prometheus con alertas automáticas por correo o Teams.
+- **Captura de imágenes WDS** — Implementar proceso de captura WIM desde equipo de referencia para mantener imágenes actualizadas.
+
+---
